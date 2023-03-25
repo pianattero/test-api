@@ -30,3 +30,14 @@ module.exports.getUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.currentUserId)
+    .then(user => {
+      if(!user) {
+        return next(createError(StatusCodes.NOT_FOUND, 'user not found'))
+      }
+      res.json(user)
+    })
+    .catch(next)
+}
