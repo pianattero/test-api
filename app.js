@@ -5,6 +5,7 @@ const logger = require("morgan");
 const createError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
 const mongoose = require("mongoose");
+const jwt = require('jsonwebtoken')
 
 /* DB initialization */
 
@@ -37,6 +38,8 @@ app.use((error, req, res, next) => {
     error = createError(StatusCodes.NOT_FOUND, "Resource not found");
   } else if (error.message.includes("E11000")) {
     error = createError(StatusCodes.BAD_REQUEST, "Already exists");
+  } else if (error instanceof jwt.JsonWebTokenError) {
+    error = createError(StatusCodes.UNAUTHORIZED, error)
   } else if (!error.status) {
     error = createError(StatusCodes.INTERNAL_SERVER_ERROR);
   }
